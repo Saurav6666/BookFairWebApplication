@@ -1,6 +1,10 @@
 import React from "react";
-
-const DeleteModal = ({ confirmDelete, setConfirmDelete, handleDeleteBook }) => {
+import { DeleteModalProps } from "./Utils";
+const DeleteModal: React.FC<DeleteModalProps> = ({
+  confirmDelete,
+  setConfirmDelete,
+  handleDeleteBook,
+}) => {
   if (!confirmDelete.isOpen) return null;
 
   return (

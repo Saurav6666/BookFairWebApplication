@@ -4,13 +4,10 @@ import * as Yup from "yup";
 import { NavLink, useNavigate } from "react-router";
 import Header from "../../components/Header";
 import bookvideo from "../../assets/login.mp4";
-import { Password } from "@mui/icons-material";
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
-  const hadleLogin = () => {
-    navigate("/login");
-  };
+
   const handleRegistration = () => {
     navigate("/register"); // Update the path as needed
   };
@@ -69,7 +66,7 @@ const RegistrationForm = () => {
                 role: Yup.string().required("Please select a role"),
                 password: Yup.string().required("Password is required"),
                 confirmpasword: Yup.string()
-                  .oneOf([Yup.ref("password"), null], "Password must match")
+                  .oneOf([Yup.ref("password")], "Password must match")
                   .required("confirmpasword is required"),
                 shopname: Yup.string().when("role", {
                   is: "seller",
@@ -88,9 +85,11 @@ const RegistrationForm = () => {
                 }),
               })}
               onSubmit={(values, { setSubmitting, setFieldError }) => {
-                const users = JSON.parse(localStorage.getItem("users")) || [];
+                const storedUsers = localStorage.getItem("users");
+
+                const users = storedUsers ? JSON.parse(storedUsers) : [];
                 const emailExists = users.some(
-                  (user) => user.email === values.email
+                  (user: { email: string }) => user.email === values.email
                 );
 
                 if (emailExists) {

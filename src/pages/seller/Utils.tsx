@@ -15,5 +15,12 @@ export interface Book {
   authorName: string;
   price: number;
   bookType: string;
-  image: string;
+  image: string | File;
+  quantity: number;
+}
+
+export interface Order {
+  id: string;
+  date: string;
+  books: Book[];
 }

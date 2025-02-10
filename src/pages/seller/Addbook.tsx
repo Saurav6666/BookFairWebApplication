@@ -8,7 +8,7 @@ import { X } from "lucide-react";
 type Modaltypes = {
   handleCloseModal?: () => void;
   hanleRefresh: () => void;
-  book?: Book | null;
+  book?: Book | null | undefined;
 };
 
 const AddBook: React.FC<Modaltypes> = ({

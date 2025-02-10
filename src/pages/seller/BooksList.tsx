@@ -6,15 +6,7 @@ import { BookOpenIcon, TrashIcon, PencilIcon } from "@heroicons/react/16/solid";
 import BookCard from "./BookCard";
 import DeleteModal from "../../components/DeleteModal";
 import { Search } from "lucide-react";
-
-interface Book {
-  id: string | null;
-  bookName: string;
-  authorName: string;
-  price: number;
-  bookType: string;
-  image: string; // Assuming image is a URL string after fetching
-}
+import { Book } from "./Utils";
 
 const BooksList = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -35,7 +27,16 @@ const BooksList = () => {
   const fetchBooks = async () => {
     try {
       const data = await getBooks();
-      setBooks(data);
+      const formattedData: Book[] = data.map((book) => ({
+        id: book.id ?? "", // Ensure `id` exists
+        bookName: book.bookName ?? "",
+        authorName: book.authorName ?? "",
+        bookType: book.bookType ?? "",
+        price: book.price ?? 0,
+        image: book.image ?? "",
+        quantity: book.quantity ?? 0, // Ensure `quantity` exists
+      }));
+      setBooks(formattedData);
     } catch (error) {
       console.error("Error fetching books:", error);
     }
@@ -137,7 +138,11 @@ const BooksList = () => {
                     >
                       {book.image ? (
                         <img
-                          src={book.image}
+                          src={
+                            book.image instanceof File
+                              ? URL.createObjectURL(book.image)
+                              : book.image
+                          }
                           alt={book.bookName}
                           className="w-12 h-12 object-cover rounded-md"
                         />

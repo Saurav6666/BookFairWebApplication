@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Search, Filter } from "lucide-react";
 import Layout from "../../components/Layout";
 import { getOrders } from "../../api-services/bookService";
+import { Book, Order } from "./Utils";
 
 const SalesDashboard: React.FC = () => {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState<Order[]>([]);
 
   const todayDate = new Date().toLocaleDateString("en-US", {
     day: "2-digit",
@@ -15,16 +16,26 @@ const SalesDashboard: React.FC = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const data = await getOrders();
-        const updatedOrders = data.map((order) => ({
+        const data = (await getOrders()) as unknown as Order[]; // Temporary Fix
+        const updatedOrders: Order[] = data.map((order) => ({
           ...order,
           date: order.date || todayDate,
+          books: order.books.map((book: Book) => ({
+            id: book.id || "",
+            bookName: book.bookName || "Unknown",
+            authorName: book.authorName || "Unknown",
+            price: book.price || 0,
+            bookType: book.bookType || "Unknown",
+            image: book.image || "",
+            quantity: book.quantity || 1,
+          })),
         }));
         setOrders(updatedOrders);
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
     };
+
     fetchOrders();
   }, []);
 
@@ -78,7 +89,11 @@ const SalesDashboard: React.FC = () => {
                           className="flex items-center gap-2 border p-2 rounded-md w-full sm:w-auto"
                         >
                           <img
-                            src={book.image}
+                            src={
+                              book.image instanceof File
+                                ? URL.createObjectURL(book.image)
+                                : book.image
+                            }
                             alt={book.bookName}
                             className="w-14 h-14 rounded-md object-cover"
                           />
@@ -129,7 +144,11 @@ const SalesDashboard: React.FC = () => {
                 {order.books.map((book, index) => (
                   <div key={index} className="flex items-center gap-4 mb-2">
                     <img
-                      src={book.imageUrl}
+                      src={
+                        book.image instanceof File
+                          ? URL.createObjectURL(book.image)
+                          : book.image
+                      }
                       alt={book.bookName}
                       className="w-16 h-20 object-cover rounded-md shadow-md"
                     />

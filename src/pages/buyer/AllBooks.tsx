@@ -45,9 +45,19 @@ const AllBooks = () => {
     const fetchBooks = async () => {
       try {
         const data = await getBooks();
-        setBooks(data);
-        setFilteredBooks(data);
-        setBookRatings(generateStarRatings(data));
+
+        // Transform image to string if it's a File or null
+        const processedData = data.map((book) => ({
+          ...book,
+          image:
+            book.image instanceof File
+              ? URL.createObjectURL(book.image)
+              : (book.image ?? "https://via.placeholder.com/150"),
+        }));
+
+        setBooks(processedData);
+        setFilteredBooks(processedData);
+        setBookRatings(generateStarRatings(processedData));
       } catch (error) {
         console.error("Error fetching books:", error);
       } finally {
@@ -175,7 +185,7 @@ const AllBooks = () => {
                     </span>
                     <button
                       className="bg-blue-600 text-white px-3 py-2 text-sm rounded hover:bg-blue-700 w-full sm:w-auto"
-                      onClick={() => addToCart(book)}
+                      onClick={() => addToCart({ ...book, quantity: 1 })}
                     >
                       Add to Cart
                     </button>

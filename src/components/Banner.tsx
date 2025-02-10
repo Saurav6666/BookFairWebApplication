@@ -41,7 +41,7 @@ const BannerCarousel = () => {
         }
         className="absolute left-5 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
       >
-        ◀
+        {"<"}
       </button>
       <button
         onClick={() =>
@@ -49,7 +49,7 @@ const BannerCarousel = () => {
         }
         className="absolute right-5 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
       >
-        ▶
+        {">"}
       </button>
 
       {/* Dots for Navigation */}

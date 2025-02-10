@@ -8,11 +8,11 @@ import Header from "../../components/Header";
 const LoginForm = () => {
   const navigate = useNavigate();
 
-  const handleLoginSubmit = (values) => {
-    console.log("Login Attempt", values);
-
+  const handleLoginSubmit = (values: { email: string; password: string }) => {
+    const storedUsers = localStorage.getItem("users");
     // Retrieve users array from localStorage
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const users: { email: string; password: string; role: string }[] =
+      storedUsers ? JSON.parse(storedUsers) : [];
 
     // Find the user with matching email and password
     const storedUser = users.find(

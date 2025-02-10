@@ -3,9 +3,14 @@ import { TrashIcon, PencilIcon } from "@heroicons/react/16/solid";
 import { Book } from "./Utils";
 interface BookCardProps {
   book: Book;
-  handleOpenModal: () => void;
-  setConfirmDelete: () => void;
+  handleOpenModal: (book: Book) => void; // ✅ Accepts a Book argument
+  setConfirmDelete: (confirmData: {
+    isOpen: boolean;
+    bookId: string | null;
+    bookName: string;
+  }) => void; // ✅ Accepts an object
 }
+
 const BookCard = ({
   book,
   handleOpenModal,
@@ -15,7 +20,11 @@ const BookCard = ({
     <div className="bg-white shadow-md rounded-lg p-4 flex items-center gap-4">
       {book.image ? (
         <img
-          src={book.image}
+          src={
+            book.image instanceof File
+              ? URL.createObjectURL(book.image)
+              : book.image
+          }
           alt={book.bookName}
           className="w-16 h-16 object-cover rounded-md"
         />

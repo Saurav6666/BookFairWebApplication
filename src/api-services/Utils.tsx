@@ -1,4 +1,6 @@
 export interface Book {
+  quantity: number;
+  id: string;
   bookName: string;
   authorName: string;
   price: number;

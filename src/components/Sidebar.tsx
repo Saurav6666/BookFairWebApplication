@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router";
 
 const Sidebar = () => {
-  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   return (
     <aside className="h-full w-60 p-4 bg-slate-700 text-white">
