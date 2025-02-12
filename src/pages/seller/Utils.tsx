@@ -24,3 +24,12 @@ export interface Order {
   date: string;
   books: Book[];
 }
+export interface userinfo {
+  name: string;
+  email: string;
+  address: string;
+  role: string;
+  shopname: string;
+  password: string;
+  logo: string;
+}

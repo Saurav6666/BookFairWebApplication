@@ -18,4 +18,6 @@ export type HeaderProps = {
 export type User = {
   role: "buyer" | "seller";
   shopname?: string;
+  profilepictureBase64?: File;
+  logoBase64?: File;
 };

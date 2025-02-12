@@ -117,6 +117,13 @@ const getOrders = async (): Promise<Order[]> => {
     throw error;
   }
 };
+const deleteOrder = async (orderId: string): Promise<void> => {
+  try {
+    await axiosInstance.delete(`/orders/${orderId}`);
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    throw error;
+  }
+};
 
-
-export { getBooks, addBook,deleteBook ,updateBook,order ,getOrders};
+export { getBooks, addBook,deleteBook ,updateBook,order ,getOrders,deleteOrder};

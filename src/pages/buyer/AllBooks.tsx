@@ -4,7 +4,8 @@ import { HeartIcon } from "@heroicons/react/24/outline";
 import { getBooks } from "../../api-services/bookService";
 import { useCart } from "../../context/CartContext";
 import { Filter, Search } from "lucide-react";
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 interface Book {
   bookName: string;
   authorName: string;
@@ -34,7 +35,26 @@ const AllBooks = () => {
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [bookRatings, setBookRatings] = useState<Record<string, number>>({});
-  const { addToCart } = useCart();
+  const { addToCart, removeFromCart } = useCart();
+  const [addedToCart, setAddedToCart] = useState<Record<string, boolean>>({});
+
+  const handleAddToCart = (book: Book) => {
+    if (addedToCart[book.bookName]) {
+      removeFromCart(book.bookName);
+      toast.info(`${book.bookName} removed from cart!`);
+      setAddedToCart((prev) => ({
+        ...prev,
+        [book.bookName]: false,
+      }));
+    } else {
+      addToCart({ ...book, quantity: 1 });
+      toast.success(`${book.bookName} added to cart successfully!`);
+      setAddedToCart((prev) => ({
+        ...prev,
+        [book.bookName]: true,
+      }));
+    }
+  };
 
   // Filter states
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -184,10 +204,16 @@ const AllBooks = () => {
                       ${book.price}
                     </span>
                     <button
-                      className="bg-blue-600 text-white px-3 py-2 text-sm rounded hover:bg-blue-700 w-full sm:w-auto"
-                      onClick={() => addToCart({ ...book, quantity: 1 })}
+                      className={`px-3 py-2 text-sm rounded w-full sm:w-auto transition-all ${
+                        addedToCart[book.bookName]
+                          ? "border border-blue-600 text-blue-600 bg-white"
+                          : "bg-blue-600 text-white hover:bg-blue-700"
+                      }`}
+                      onClick={() => handleAddToCart(book)}
                     >
-                      Add to Cart
+                      {addedToCart[book.bookName]
+                        ? "Remove from Cart"
+                        : "Add to Cart"}
                     </button>
                   </div>
                 </div>

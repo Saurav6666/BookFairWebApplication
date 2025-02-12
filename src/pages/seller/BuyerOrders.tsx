@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Trash2 } from "lucide-react";
 import Layout from "../../components/Layout";
-import { getOrders } from "../../api-services/bookService";
+import { getOrders, deleteOrder } from "../../api-services/bookService";
 import { Book, Order } from "./Utils";
+import DeleteModal from "../../components/DeleteModal";
 
 const SalesDashboard: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-
+  const [confirmDelete, setConfirmDelete] = useState<{
+    isOpen: boolean;
+    bookId: string | null;
+    bookName: string;
+  }>({
+    isOpen: false,
+    bookId: null,
+    bookName: "",
+  });
+  console.log(confirmDelete, "confirmDelete");
   const todayDate = new Date().toLocaleDateString("en-US", {
     day: "2-digit",
     month: "short",
@@ -39,6 +49,20 @@ const SalesDashboard: React.FC = () => {
     fetchOrders();
   }, []);
 
+  const handleDeleteOrder = async () => {
+    if (!confirmDelete.bookId) return;
+
+    try {
+      await deleteOrder(confirmDelete.bookId);
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => order.id !== confirmDelete.bookId)
+      );
+      setConfirmDelete({ isOpen: false, bookId: null, bookName: "" });
+    } catch (error) {
+      console.error("Failed to delete order:", error);
+    }
+  };
+
   return (
     <Layout>
       <div className="p-6 bg-gray-100 min-h-screen">
@@ -67,6 +91,7 @@ const SalesDashboard: React.FC = () => {
                 <th className="p-4 text-left">Author Name</th>
                 <th className="p-4 text-left">Price</th>
                 <th className="p-4 text-left">Quantity</th>
+                <th className="p-4 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -117,6 +142,20 @@ const SalesDashboard: React.FC = () => {
                       (total, book) => total + book.quantity,
                       0
                     )}
+                  </td>
+                  <td className="p-4">
+                    <button
+                      onClick={() =>
+                        setConfirmDelete({
+                          isOpen: true,
+                          bookId: order.id,
+                          bookName: order.books[0]?.bookName || "Unknown",
+                        })
+                      }
+                      className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -170,6 +209,13 @@ const SalesDashboard: React.FC = () => {
           )}
         </div>
       </div>
+      {confirmDelete.isOpen && (
+        <DeleteModal
+          confirmDelete={confirmDelete}
+          setConfirmDelete={setConfirmDelete}
+          handleDeleteBook={handleDeleteOrder}
+        />
+      )}
     </Layout>
   );
 };

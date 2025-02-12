@@ -26,7 +26,7 @@ const LoginForm = () => {
       if (storedUser.role === "seller") {
         navigate("/seller-dashboard");
       } else {
-        navigate("/buyer-dashboard");
+        navigate("/home");
       }
     } else {
       alert("Invalid credentials!");

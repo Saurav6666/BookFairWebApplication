@@ -1,4 +1,4 @@
-import { BellIcon, ShoppingCartIcon, UserCircleIcon } from "lucide-react";
+import { ShoppingCartIcon, UserCircleIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router";
@@ -23,7 +23,15 @@ const Header: React.FC<HeaderProps> = ({ hadleRegistration, hadleLogin }) => {
       <div className="flex items-center space-x-3">
         {user?.role === "seller" ? (
           <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-wide capitalize">
-            📖 {user.shopname}
+            <span className="flex gap-2">
+              <img
+                src={user?.logoBase64}
+                alt="User"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="w-10 h-10 rounded-full object-cover cursor-pointer border-2 border-white"
+              />
+              {user.shopname}
+            </span>
           </h1>
         ) : (
           <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-wide">
@@ -68,12 +76,11 @@ const Header: React.FC<HeaderProps> = ({ hadleRegistration, hadleLogin }) => {
           {/* User Profile */}
           <div className="relative">
             <img
-              src="https://i.pravatar.cc/50"
+              src={user?.profilepictureBase64}
               alt="User"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="w-10 h-10 rounded-full object-cover cursor-pointer border-2 border-white"
             />
-
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg">
                 <button

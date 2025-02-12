@@ -1,32 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import { PencilSquareIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { userinfo } from "./Utils";
 
-interface Seller {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  profileImage?: string;
-}
-
-const BookSellerProfile = () => {
-  const [seller, setSeller] = useState<Seller>({
-    name: "John Doe",
-    email: "johndoe@example.com",
-    phone: "+1234567890",
-    address: "123 Book Street, Booktown, BK 45678",
-    profileImage: "",
+const Profile = () => {
+  const [user, setUser] = useState<userinfo | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    address: "",
+    shopname: "",
+    password: "",
+    logo: "",
+    logoBase64: "",
+    profilepictureBase64: "",
   });
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user") || "");
+    if (storedUser) {
+      setUser(storedUser);
+      setFormData(storedUser);
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = () => {
+    localStorage.setItem("user", JSON.stringify(formData));
+    setUser(formData);
+    setEditing(false);
+  };
 
   return (
     <Layout>
-      <>
-        {/* Profile Header */}
+      <div className=" p-6 bg-white rounded-lg shadow-lg">
         <div className="flex items-center space-x-6">
-          {seller.profileImage ? (
+          {formData.profilepictureBase64 ? (
             <img
-              src={seller.profileImage}
+              src={formData.profilepictureBase64}
               alt="Profile"
               className="w-24 h-24 rounded-full object-cover"
             />
@@ -34,57 +49,53 @@ const BookSellerProfile = () => {
             <UserCircleIcon className="w-24 h-24 text-gray-400" />
           )}
           <div>
-            <h2 className="text-2xl font-bold">{seller.name}</h2>
-            <p className="text-gray-500">{seller.email}</p>
+            <h2 className="text-2xl font-bold">{formData.name}</h2>
+            <p className="text-gray-500">{formData.email}</p>
           </div>
-          <button className="ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-blue-700">
+          <button
+            onClick={() => setEditing(!editing)}
+            className="ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-blue-700"
+          >
             <PencilSquareIcon className="w-5 h-5" />
-            <span>Edit</span>
+            <span>{editing ? "Cancel" : "Edit"}</span>
           </button>
         </div>
 
-        {/* Profile Details */}
         <div className="grid grid-cols-2 gap-6 mt-6">
-          <div>
-            <label className="text-gray-600">Full Name</label>
-            <input
-              type="text"
-              className="w-full p-2 mt-1 border rounded-lg"
-              value={seller.name}
-              disabled
-            />
-          </div>
-          <div>
-            <label className="text-gray-600">Phone</label>
-            <input
-              type="text"
-              className="w-full p-2 mt-1 border rounded-lg"
-              value={seller.phone}
-              disabled
-            />
-          </div>
-          <div>
-            <label className="text-gray-600">Email</label>
-            <input
-              type="email"
-              className="w-full p-2 mt-1 border rounded-lg"
-              value={seller.email}
-              disabled
-            />
-          </div>
-          <div>
-            <label className="text-gray-600">Address</label>
-            <input
-              type="text"
-              className="w-full p-2 mt-1 border rounded-lg"
-              value={seller.address}
-              disabled
-            />
-          </div>
+          {Object.keys(formData).map(
+            (key) =>
+              key !== "role" &&
+              key !== "logo" &&
+              key !== "shopname" &&
+              key !== "logoBase64" &&
+              key !== "profilepictureBase64" &&
+              key !== "profilepicture" &&
+              key !== "confirmpasword" && (
+                <div key={key}>
+                  <label className="text-gray-600 capitalize">{key}</label>
+                  <input
+                    type="text"
+                    name={key}
+                    className="w-full p-2 mt-1 border rounded-lg"
+                    value={formData[key] || ""}
+                    onChange={handleChange}
+                    disabled={!editing}
+                  />
+                </div>
+              )
+          )}
         </div>
-      </>
+        {editing && (
+          <button
+            onClick={handleSave}
+            className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+          >
+            Save Changes
+          </button>
+        )}
+      </div>
     </Layout>
   );
 };
 
-export default BookSellerProfile;
+export default Profile;

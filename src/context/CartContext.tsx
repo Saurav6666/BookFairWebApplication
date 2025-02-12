@@ -20,6 +20,7 @@ interface CartContextType {
   addToCart: (book: Book) => void;
   updateQuantity: (bookName: string, change: number) => void;
   removeFromCart: (bookName: string) => void;
+  clearCart: () => void; // New function
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -62,7 +63,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           .filter((book) => book.quantity > 0) // Remove if quantity is 0
     );
   };
-
+  const clearCart = () => setCart([]); // Clear cart function
   const removeFromCart = (bookName: string) => {
     setCart((prevCart) =>
       prevCart.filter((book) => book.bookName !== bookName)
@@ -71,7 +72,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, updateQuantity, removeFromCart }}
+      value={{ cart, addToCart, updateQuantity, removeFromCart, clearCart }}
     >
       {children}
     </CartContext.Provider>
