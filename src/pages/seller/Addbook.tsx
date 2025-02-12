@@ -53,7 +53,7 @@ const AddBook: React.FC<Modaltypes> = ({
           <X size={24} />
         </button>
 
-        <h2 className="text-2xl font-semibold text-center mb-6">
+        <h2 className="text-2xl  text-blue-600 font-semibold text-center mb-4">
           {book ? "Update Book" : "Add New Book"}
         </h2>
 
@@ -80,6 +80,7 @@ const AddBook: React.FC<Modaltypes> = ({
                 bookName: book?.bookName || "",
                 authorName: book?.authorName || "",
                 price: book?.price || 0,
+                quantity: book?.quantity || 1,
                 bookType: book?.bookType || "",
                 image: book?.image || null,
               }}
@@ -103,9 +104,23 @@ const AddBook: React.FC<Modaltypes> = ({
             >
               {({ setFieldValue }) => (
                 <Form>
-                  <CommonInput label="Book Name" name="bookName" />
-                  <CommonInput label="Author Name" name="authorName" />
+                  <CommonInput
+                    label="Book Name"
+                    name="bookName"
+                    placeholder="add book name"
+                  />
+                  <CommonInput
+                    label="Author Name"
+                    name="authorName"
+                    placeholder="add author name"
+                  />
                   <CommonInput label="Price" name="price" type="number" />
+                  <CommonInput
+                    label="Quantity"
+                    name="quantity"
+                    type="number"
+                    placeholder="add books quantity"
+                  />
                   <CommonInput
                     label="Book Type"
                     name="bookType"

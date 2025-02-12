@@ -20,6 +20,7 @@ const addBook = async (book: BookPayload): Promise<Book> => {
       bookName: book.bookName,
       authorName: book.authorName,
       price: book.price.toString(),
+      quantity:book.quantity.toString(),
       bookType: book.bookType,
       image: book.imageBase64, // Send as Base64
     });
@@ -46,6 +47,7 @@ const updateBook = async (bookId: string, updatedBook: BookPayload): Promise<Boo
       bookName: updatedBook.bookName,
       authorName: updatedBook.authorName,
       price: updatedBook.price.toString(),
+      quantity:updatedBook.quantity.toString(),
       bookType: updatedBook.bookType,
       image: updatedBook.imageBase64, // Send as Base64
     });

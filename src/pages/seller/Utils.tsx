@@ -6,6 +6,7 @@ export const validationSchema = Yup.object({
   price: Yup.number()
     .positive("Price must be positive")
     .required("Price is required"),
+  quantity: Yup.string().required("quantity is required"),
   bookType: Yup.string().required("Book type is required"),
 });
 //interface
@@ -14,9 +15,9 @@ export interface Book {
   bookName: string;
   authorName: string;
   price: number;
+  quantity: number;
   bookType: string;
   image: string | File;
-  quantity: number;
 }
 
 export interface Order {

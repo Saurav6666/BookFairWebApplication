@@ -6,29 +6,15 @@ import { useCart } from "../../context/CartContext";
 import { Filter, Search } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { generateStarRatings } from "./Utils";
 interface Book {
   bookName: string;
   authorName: string;
   price: number;
   bookType: string;
   image: string;
+  quantity: string;
 }
-
-const generateStarRatings = (books: Book[]): Record<string, number> => {
-  const savedRatings = localStorage.getItem("bookRatings");
-  const ratings: Record<string, number> = savedRatings
-    ? JSON.parse(savedRatings)
-    : {};
-
-  books.forEach((book) => {
-    if (!ratings[book.bookName]) {
-      ratings[book.bookName] = Math.floor(Math.random() * 5) + 1; // Random between 1-5
-    }
-  });
-
-  localStorage.setItem("bookRatings", JSON.stringify(ratings));
-  return ratings;
-};
 
 const AllBooks = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -73,6 +59,7 @@ const AllBooks = () => {
             book.image instanceof File
               ? URL.createObjectURL(book.image)
               : (book.image ?? "https://via.placeholder.com/150"),
+          quantity: book.quantity ?? 0, // Ensure quantity is set
         }));
 
         setBooks(processedData);
@@ -179,9 +166,9 @@ const AllBooks = () => {
                 </div>
 
                 {/* Favorite Icon */}
-                <button className="absolute top-2 right-2 bg-white p-1 rounded-full shadow">
+                {/* <button className="absolute top-2 right-2 bg-white p-1 rounded-full shadow">
                   <HeartIcon className="w-5 h-5 text-gray-600" />
-                </button>
+                </button> */}
 
                 {/* Book Details */}
                 <div className="p-4">
@@ -197,7 +184,9 @@ const AllBooks = () => {
                       {"★".repeat(bookRatings[book.bookName])}
                     </p>
                   </div>
-
+                  <div className="mt-2 bg-gray-200 text-gray-700 px-3 py-1 rounded-md w-max text-sm">
+                    Qty: {book.quantity}
+                  </div>
                   {/* Price & Add to Cart Button */}
                   <div className="mt-3 flex flex-col sm:flex-row sm:items-center justify-between">
                     <span className="text-blue-600 font-semibold mb-2 sm:mb-0">

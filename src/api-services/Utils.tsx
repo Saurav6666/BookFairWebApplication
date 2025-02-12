@@ -14,6 +14,7 @@ export interface BookPayload {
   bookName: string;
   authorName: string;
   price: string; // Converted to string for API
+  quantity: string;
   bookType: string;
   image: string; // Base64 string
   imageBase64: string;
