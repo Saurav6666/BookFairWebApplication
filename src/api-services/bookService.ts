@@ -3,15 +3,20 @@ import axiosInstance from './axiosInstance';
 import { Book, BookItem, BookPayload, Cart, Order } from './Utils';
 
 
-const getBooks = async (): Promise<Book[]>  => {
+const getBooks = async (): Promise<Book[]> => {
   try {
     const response = await axiosInstance.get('/books');
-    return response.data;
+    const books = response.data;
+
+    return books.sort((a: Book, b: Book) => 
+      new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+    );
   } catch (error) {
     console.error('Error fetching books:', error);
     throw error;
   }
 };
+
 
 
 const addBook = async (book: BookPayload): Promise<Book> => {
@@ -23,6 +28,7 @@ const addBook = async (book: BookPayload): Promise<Book> => {
       quantity:book.quantity.toString(),
       bookType: book.bookType,
       image: book.imageBase64, // Send as Base64
+      createdAt: new Date().toISOString()
     });
 
     return response.data;

@@ -25,7 +25,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         {/* Main Content (Scrollable) */}
-        <div className="flex-1 flex flex-col h-[calc(100vh-4rem)] overflow-auto p-4">
+        <div className="flex-1 flex flex-col h-full overflow-auto p-4">
           {children}
         </div>
       </div>

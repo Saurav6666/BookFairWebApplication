@@ -73,8 +73,10 @@ const BooksList = () => {
   };
 
   // Filter books based on the search query
-  const filteredBooks = books.filter((book) =>
-    book.bookName.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredBooks = books.filter(
+    (book) =>
+      book.bookName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.authorName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -86,11 +88,11 @@ const BooksList = () => {
       {/* Search Input */}
       <div className="flex justify-between items-center mb-4">
         {/* Search Bar */}
-        <div className="relative w-1/2">
+        <div className="relative ">
           <Search className="absolute left-3 top-2.5 text-gray-500" size={20} />
           <input
             type="text"
-            placeholder="Search books..."
+            placeholder="Search by Book Name or Author"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -105,7 +107,7 @@ const BooksList = () => {
       </div>
 
       {/* Table View for Desktop */}
-      <div className="hidden md:block">
+      <div className="hidden md:block ">
         <div className="relative overflow-x-auto">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

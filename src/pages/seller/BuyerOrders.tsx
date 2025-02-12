@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Search, Filter, Trash2 } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 import Layout from "../../components/Layout";
 import { getOrders, deleteOrder } from "../../api-services/bookService";
 import { Book, Order } from "./Utils";
@@ -7,6 +7,7 @@ import DeleteModal from "../../components/DeleteModal";
 
 const SalesDashboard: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search input
   const [confirmDelete, setConfirmDelete] = useState<{
     isOpen: boolean;
     bookId: string | null;
@@ -16,7 +17,7 @@ const SalesDashboard: React.FC = () => {
     bookId: null,
     bookName: "",
   });
-  console.log(confirmDelete, "confirmDelete");
+
   const todayDate = new Date().toLocaleDateString("en-US", {
     day: "2-digit",
     month: "short",
@@ -26,7 +27,7 @@ const SalesDashboard: React.FC = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const data = (await getOrders()) as unknown as Order[]; // Temporary Fix
+        const data = (await getOrders()) as unknown as Order[];
         const updatedOrders: Order[] = data.map((order) => ({
           ...order,
           date: order.date || todayDate,
@@ -63,26 +64,39 @@ const SalesDashboard: React.FC = () => {
     }
   };
 
+  // Filtered orders based on search input
+  const filteredOrders = orders.filter((order) =>
+    order.books.some(
+      (book) =>
+        book.bookName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        book.authorName.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
   return (
     <Layout>
       <div className="p-6 bg-gray-100 min-h-screen">
-        {/* Header Section */}
+        {/* Header Section with Search Input */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold">Orders</h2>
-          <div className="flex gap-2">
-            <button className="flex items-center border px-4 py-2 rounded-md">
-              <Search className="w-4 h-4 mr-2" /> Search
-            </button>
-            <button className="flex items-center border px-4 py-2 rounded-md">
-              <Filter className="w-4 h-4 mr-2" /> Filters
-            </button>
+          <div className="flex gap-2 items-center">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Search by Book Name or Author"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 border rounded-md focus:ring focus:ring-blue-500"
+              />
+            </div>
           </div>
         </div>
 
         {/* Responsive Table for Large Screens */}
         <div className="hidden md:block bg-white shadow-md rounded-lg overflow-hidden">
-          <table className="w-full border-collapse">
-            <thead className="bg-gray-200">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th className="p-4 text-left">Order ID</th>
                 <th className="p-4 text-left">Date</th>
@@ -95,7 +109,7 @@ const SalesDashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
+              {filteredOrders.map((order) => (
                 <tr key={order.id} className="border-t">
                   <td className="p-4">{order.id}</td>
                   <td className="p-4">{order.date}</td>
@@ -159,7 +173,7 @@ const SalesDashboard: React.FC = () => {
                   </td>
                 </tr>
               ))}
-              {orders.length === 0 && (
+              {filteredOrders.length === 0 && (
                 <tr>
                   <td colSpan={7} className="p-4 text-center text-gray-500">
                     No orders found.
@@ -172,22 +186,17 @@ const SalesDashboard: React.FC = () => {
 
         {/* Card View for Mobile Screens */}
         <div className="md:hidden space-y-4">
-          {orders.map((order) => (
+          {filteredOrders.map((order) => (
             <div key={order.id} className="bg-white shadow-md rounded-lg p-4">
               <div className="flex justify-between items-center border-b pb-2 mb-2">
                 <h3 className="text-lg font-semibold">Order ID: {order.id}</h3>
                 <span className="text-gray-500 text-sm">{order.date}</span>
               </div>
-
               <div>
                 {order.books.map((book, index) => (
                   <div key={index} className="flex items-center gap-4 mb-2">
                     <img
-                      src={
-                        book.image instanceof File
-                          ? URL.createObjectURL(book.image)
-                          : book.image
-                      }
+                      src={book.image}
                       alt={book.bookName}
                       className="w-16 h-20 object-cover rounded-md shadow-md"
                     />
@@ -204,11 +213,9 @@ const SalesDashboard: React.FC = () => {
               </div>
             </div>
           ))}
-          {orders.length === 0 && (
-            <p className="text-center text-gray-500">No orders found.</p>
-          )}
         </div>
       </div>
+
       {confirmDelete.isOpen && (
         <DeleteModal
           confirmDelete={confirmDelete}

@@ -7,6 +7,7 @@ export interface Book {
   bookType: string;
   image: File | null; // File object for image upload
   imageBase64: string;
+  createdAt?: string; // Optional timestamp
 }
 
 /** Book Payload for API (Base64 Image) */

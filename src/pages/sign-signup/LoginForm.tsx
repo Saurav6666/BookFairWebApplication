@@ -39,7 +39,7 @@ const LoginForm = () => {
 
   return (
     <>
-      <div className="relative z-20 w-full">
+      <div className="relative z-20 w-full sticky top-0 z-50">
         <Header hadleRegistration={handleRegistration} />
       </div>
       <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
