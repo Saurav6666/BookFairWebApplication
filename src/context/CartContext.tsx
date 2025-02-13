@@ -102,6 +102,7 @@ interface Book {
   bookType: string;
   image: string;
   quantity: number;
+  shopName?: string;
 }
 
 interface CartContextType {

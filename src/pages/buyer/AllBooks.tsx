@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { generateStarRatings } from "./Utils";
 import Soldout from "../../../public/images/soldout.png";
 interface Book {
+  id: string;
   bookName: string;
   authorName: string;
   price: number;
@@ -25,19 +26,19 @@ const AllBooks = () => {
   const [addedToCart, setAddedToCart] = useState<Record<string, boolean>>({});
 
   const handleAddToCart = (book: Book) => {
-    if (addedToCart[book.bookName]) {
-      removeFromCart(book.bookName);
-      toast.info(`${book.bookName} removed from cart!`);
+    if (addedToCart[book.id]) {
+      removeFromCart(book.id);
+      toast.info(`${book.id} removed from cart!`);
       setAddedToCart((prev) => ({
         ...prev,
-        [book.bookName]: false,
+        [book.id]: false,
       }));
     } else {
       addToCart({ ...book, quantity: 1 });
-      toast.success(`${book.bookName} added to cart successfully!`);
+      toast.success(`${book.id} added to cart successfully!`);
       setAddedToCart((prev) => ({
         ...prev,
-        [book.bookName]: true,
+        [book.id]: true,
       }));
     }
   };
@@ -209,14 +210,14 @@ const AllBooks = () => {
                     {Number(book.quantity) > 0 ? (
                       <button
                         className={`px-3 py-2 text-sm rounded w-full sm:w-auto transition-all flex ${
-                          addedToCart[book.bookName]
+                          addedToCart[book.id]
                             ? "border border-blue-600 text-blue-600 bg-white"
                             : "bg-primary text-white hover:bg-primaryDark"
                         }`}
                         onClick={() => handleAddToCart(book)}
                       >
                         <ShoppingCartIcon className="w-6 h-6 text-white" />
-                        {addedToCart[book.bookName]
+                        {addedToCart[book.id]
                           ? "Remove from Cart"
                           : "Add to Cart"}
                       </button>

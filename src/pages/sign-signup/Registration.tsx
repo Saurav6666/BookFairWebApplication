@@ -104,7 +104,8 @@ const RegistrationForm = () => {
                 const storedUsers = localStorage.getItem("users");
                 const users = storedUsers ? JSON.parse(storedUsers) : [];
 
-                // Check if email already exists
+                console.log("Existing Users:", users); // Debugging
+
                 const emailExists = users.some(
                   (user: { email: string }) => user.email === values.email
                 );
@@ -114,41 +115,35 @@ const RegistrationForm = () => {
                   return;
                 }
 
-                // Convert logo to Base64 if available
-                if (values.logo) {
-                  const file = (values.logo as FileList)[0];
+                // Convert profile picture & logo safely
+                if (
+                  values.logo &&
+                  values.logo instanceof FileList &&
+                  values.logo.length > 0
+                ) {
+                  const file = values.logo[0]; // Extract file
                   values.logoBase64 = await convertToBase64(file);
                 }
-                if (values.profilepicture) {
-                  const file = (values.profilepicture as FileList)[0];
+
+                if (
+                  values.profilepicture &&
+                  values.profilepicture instanceof FileList &&
+                  values.profilepicture.length > 0
+                ) {
+                  const file = values.profilepicture[0]; // Extract file
                   values.profilepictureBase64 = await convertToBase64(file);
                 }
-                users.push(values);
+
+                // Save to localStorage
+                users.push({ ...values, password: values.password }); // Avoid storing confirm password
                 localStorage.setItem("users", JSON.stringify(users));
-                console.log("Form Submitted", values);
+
+                console.log("Form Submitted & Stored:", values);
                 navigate("/login");
               }}
             >
               {({ setFieldValue, isSubmitting, values }) => (
                 <Form className="space-y-4">
-                  {/* <div>
-                    <label className="block text-gray-700">
-                      Profile picture
-                    </label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="w-full p-2 border rounded-lg"
-                      onChange={(event) =>
-                        setFieldValue("profilepicture", event.target.files)
-                      }
-                    />
-                    <ErrorMessage
-                      name="profilepicture"
-                      component="div"
-                      className="text-red-500 text-sm"
-                    />
-                  </div> */}
                   <div>
                     <label className="block text-gray-700 font-medium">
                       Profile Picture
@@ -170,16 +165,17 @@ const RegistrationForm = () => {
                           Drag & drop or click to upload an image
                         </p>
                       )}
+
                       <input
                         id="profileUpload"
                         type="file"
                         accept="image/*"
                         className="hidden"
                         onChange={async (event) => {
-                          const file = event.target.files?.[0];
+                          const file = event.target.files?.[0]; // Extract single file
                           if (file) {
                             const base64 = await convertToBase64(file);
-                            setFieldValue("profilepicture", file);
+                            setFieldValue("profilepicture", event.target.files); // Store FileList
                             setFieldValue("profilepictureBase64", base64);
                           }
                         }}
@@ -280,10 +276,16 @@ const RegistrationForm = () => {
                           type="file"
                           accept="image/*"
                           className="w-full p-2 border rounded-lg"
-                          onChange={(event) =>
-                            setFieldValue("logo", event.target.files)
-                          }
+                          onChange={async (event) => {
+                            const file = event.target.files?.[0];
+                            if (file) {
+                              const base64 = await convertToBase64(file);
+                              setFieldValue("logo", file);
+                              setFieldValue("logoBase64", base64);
+                            }
+                          }}
                         />
+
                         <ErrorMessage
                           name="logo"
                           component="div"
