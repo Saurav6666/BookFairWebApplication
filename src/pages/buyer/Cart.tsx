@@ -41,6 +41,11 @@ const MyCart = () => {
 
   return (
     <Layout>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 p-4">
+        <h1 className="text-2xl font-semibold mb-4 md:mb-0 text-primary">
+          My Cart
+        </h1>
+      </div>
       {safeCart.length === 0 ? (
         <div className="flex flex-col items-center justify-center mt-10 px-4">
           <img

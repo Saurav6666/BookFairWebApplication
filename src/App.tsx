@@ -12,6 +12,7 @@ import AllBooks from "./pages/buyer/AllBooks";
 import { CartProvider } from "./context/CartContext";
 import MyCart from "./pages/buyer/Cart";
 import { ToastContainer } from "react-toastify";
+import MyOrder from "./pages/buyer/MyOrder";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
             <Route index element={<AllBooks />} />
           </Route>
           <Route path="/my-cart" element={<MyCart />} />
+          <Route path="/my-orders" element={<MyOrder />} />
         </Routes>
         <ToastContainer position="top-right" autoClose={3000} />
       </CartProvider>

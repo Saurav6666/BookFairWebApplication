@@ -33,6 +33,11 @@ const MobileNav: React.FC = () => {
                 My Cart
               </Link>
             </li>
+            <li>
+              <Link to="/my-orders" className="p-2">
+                My Orders
+              </Link>
+            </li>
           </>
         )}
       </ul>
