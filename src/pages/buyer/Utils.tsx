@@ -6,6 +6,7 @@ export interface Book {
   bookType: string;
   image: string | File | null; // Allow File or null
   quantity?: number; // Optional, for cart functionality
+  shopName?: string;
 }
 //extra function for rating
 export const generateStarRatings = (books: Book[]): Record<string, number> => {

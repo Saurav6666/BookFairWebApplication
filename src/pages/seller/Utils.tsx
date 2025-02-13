@@ -25,6 +25,7 @@ export interface Order {
   id: string;
   date: string;
   books: Book[];
+  shopName: string;
 }
 export interface userinfo {
   name: string;

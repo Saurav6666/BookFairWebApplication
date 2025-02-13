@@ -39,7 +39,7 @@ const BooksList = () => {
       const shopName = user?.role === "seller" ? user.shopname : null; // Check if user is seller
 
       const formattedData: Book[] = data
-        .filter((book) => (shopName ? book.shopName === shopName : true)) // Filter books for the seller
+        .filter((book) => (shopName ? book.shopName === shopName : true))
         .map((book) => ({
           id: book.id ?? "",
           bookName: book.bookName ?? "",

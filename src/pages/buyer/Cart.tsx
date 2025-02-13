@@ -17,7 +17,7 @@ const MyCart = () => {
     }
 
     const orderItems = safeCart.map(
-      ({ id, bookName, authorName, price, bookType, image, quantity }) => ({
+      ({
         id,
         bookName,
         authorName,
@@ -25,6 +25,16 @@ const MyCart = () => {
         bookType,
         image,
         quantity,
+        shopName,
+      }) => ({
+        id,
+        bookName,
+        authorName,
+        price,
+        bookType,
+        image,
+        quantity,
+        shopName,
       })
     );
 

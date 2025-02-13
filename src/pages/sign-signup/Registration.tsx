@@ -332,7 +332,6 @@ const RegistrationForm = () => {
                     type="submit"
                     className="w-full bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700"
                     disabled={isSubmitting}
-                    onClick={() => alert("clicked")}
                   >
                     Register
                   </button>

@@ -23,12 +23,14 @@ export interface BookPayload {
 
 /** Order Itemexport Interface */
 export interface OrderItem {
+  id: string;
   bookName: string;
   authorName: string;
   price: number;
   bookType: string;
   image: string;
   quantity: number;
+  shopName: string;
 }
 
 /** Orderexport Interface */
@@ -45,6 +47,7 @@ export interface BookItem {
   bookType: string;
   image: string;
   quantity: number;
+  shopName: string;
 }
 /** Cartexport Interface */
 export interface Cart {

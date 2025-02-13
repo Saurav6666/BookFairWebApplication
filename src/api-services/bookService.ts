@@ -55,6 +55,11 @@ const deleteBook = async (bookId: string): Promise<{ message: string }> => {
 };
 const updateBook = async (bookId: string, updatedBook: BookPayload): Promise<Book> => {
   try {
+    const sellerData = localStorage.getItem("user");
+    const parsedData = sellerData ? JSON.parse(sellerData) : null;
+
+    // Extract shopname if user is a seller
+    const shopName = parsedData?.role === "seller" ? parsedData.shopname : null;
     const response = await axiosInstance.put(`/books/${bookId}`, {
       bookName: updatedBook.bookName,
       authorName: updatedBook.authorName,
@@ -62,6 +67,7 @@ const updateBook = async (bookId: string, updatedBook: BookPayload): Promise<Boo
       quantity:updatedBook.quantity.toString(),
       bookType: updatedBook.bookType,
       image: updatedBook.imageBase64, // Send as Base64
+      shopName
     });
 
     return response.data;
@@ -81,7 +87,7 @@ const order = async (cart: Cart): Promise<Order> => {
 
     // Step 1: Aggregate Books
     const orderData: Record<string, BookItem> = cart.items.reduce((acc, book) => {
-      const { bookName, authorName, price, bookType, image, quantity, id } = book;
+      const { bookName, authorName, price, bookType, image, quantity, id,shopName } = book;
 
       // Ensure quantity is a number
       const bookQuantity = Number(quantity) || 1;
@@ -95,6 +101,7 @@ const order = async (cart: Cart): Promise<Order> => {
           bookType,
           image,
           quantity: bookQuantity,
+          shopName,
         };
       } else {
         acc[id].quantity += bookQuantity;

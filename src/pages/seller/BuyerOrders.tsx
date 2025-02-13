@@ -33,19 +33,32 @@ const SalesDashboard: React.FC = () => {
     const fetchOrders = async () => {
       try {
         const data = (await getOrders()) as unknown as Order[];
-        const updatedOrders: Order[] = data.map((order) => ({
-          ...order,
-          date: order.date || todayDate,
-          books: order.books.map((book: Book) => ({
-            id: book.id || "",
-            bookName: book.bookName || "Unknown",
-            authorName: book.authorName || "Unknown",
-            price: book.price || 0,
-            bookType: book.bookType || "Unknown",
-            image: book.image || "",
-            quantity: book.quantity || 1,
-          })),
-        }));
+
+        const user = JSON.parse(localStorage.getItem("user") || "{}"); // Get user from localStorage
+        const shopName = user?.role === "seller" ? user.shopname : null; // Check if user is seller
+
+        const updatedOrders: Order[] = data
+          .filter((order) =>
+            shopName
+              ? order.books.some((book) => book.shopName === shopName)
+              : true
+          ) // Filter orders by shopName
+          .map((order) => ({
+            ...order,
+            date: order.date || todayDate,
+            books: order.books
+              .filter((book) => (shopName ? book.shopName === shopName : true)) // Filter books inside the order
+              .map((book: Book) => ({
+                id: book.id || "",
+                bookName: book.bookName || "Unknown",
+                authorName: book.authorName || "Unknown",
+                price: book.price || 0,
+                bookType: book.bookType || "Unknown",
+                image: book.image || "",
+                quantity: book.quantity || 1,
+              })),
+          }));
+
         setOrders(updatedOrders);
       } catch (error) {
         console.error("Error fetching orders:", error);
