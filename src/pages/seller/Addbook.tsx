@@ -130,6 +130,10 @@ const AddBook: React.FC<Modaltypes> = ({
                       { value: "non-fiction", label: "Non-fiction" },
                       { value: "sci-fi", label: "Sci-fi" },
                       { value: "mystery", label: "Mystery" },
+                      { value: "biography", label: "Biography" },
+                      { value: "history", label: "History" },
+                      { value: "romance", label: "Romance" },
+                      { value: "fantasy", label: "Fantasy" },
                     ]}
                   />
 

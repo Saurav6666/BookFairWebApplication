@@ -17,7 +17,8 @@ const MyCart = () => {
     }
 
     const orderItems = safeCart.map(
-      ({ bookName, authorName, price, bookType, image, quantity }) => ({
+      ({ id, bookName, authorName, price, bookType, image, quantity }) => ({
+        id,
         bookName,
         authorName,
         price,
@@ -81,7 +82,7 @@ const MyCart = () => {
                     </p>
                     <button
                       className="text-red-500 text-xs sm:text-sm mt-2"
-                      onClick={() => removeFromCart(book.bookName)}
+                      onClick={() => removeFromCart(book.id)}
                     >
                       Remove
                     </button>
@@ -92,7 +93,7 @@ const MyCart = () => {
                 <div className="flex items-center space-x-2 mt-2 sm:mt-0">
                   <button
                     className="border px-2 py-1 rounded text-sm"
-                    onClick={() => updateQuantity(book.bookName, -1)}
+                    onClick={() => updateQuantity(book.id, -1)}
                   >
                     -
                   </button>
@@ -101,7 +102,7 @@ const MyCart = () => {
                   </span>
                   <button
                     className="border px-2 py-1 rounded text-sm"
-                    onClick={() => updateQuantity(book.bookName, 1)}
+                    onClick={() => updateQuantity(book.id, 1)}
                   >
                     +
                   </button>

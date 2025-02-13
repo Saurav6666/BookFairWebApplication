@@ -75,39 +75,40 @@ const SalesDashboard: React.FC = () => {
 
   return (
     <Layout>
-      <div className="p-6 bg-gray-100 min-h-screen">
-        {/* Header Section with Search Input */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Orders</h2>
-          <div className="flex gap-2 items-center">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search by Book Name or Author"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border rounded-md focus:ring focus:ring-blue-500"
-              />
-            </div>
+      {/* Header Section with Search Input */}
+      <div className="flex justify-between items-center mb-6  text-blue-600 ">
+        <h2 className="text-2xl font-semibold">Orders</h2>
+        <div className="flex gap-2 items-center">
+          <div className="relative">
+            <Search className="absolute left-3 top-2.5 text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search by Book Name or Author"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
         </div>
+      </div>
 
-        {/* Responsive Table for Large Screens */}
-        <div className="hidden md:block bg-white shadow-md rounded-lg overflow-hidden">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th className="p-4 text-left">Order ID</th>
-                <th className="p-4 text-left">Date</th>
-                <th className="p-4 text-left">Books Name</th>
-                <th className="p-4 text-left">Book Cover</th>
-                <th className="p-4 text-left">Author Name</th>
-                <th className="p-4 text-left">Price</th>
-                <th className="p-4 text-left">Quantity</th>
-                <th className="p-4 text-left">Actions</th>
-              </tr>
-            </thead>
+      {/* Responsive Table for Large Screens */}
+
+      <div className="hidden md:block bg-white shadow-md rounded-lg overflow-x-auto max-h-[650px]">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0 z-10">
+            <tr>
+              <th className="p-4 text-left">Order ID</th>
+              <th className="p-4 text-left">Date</th>
+              <th className="p-4 text-left">Books Name</th>
+              <th className="p-4 text-left">Book Cover</th>
+              <th className="p-4 text-left">Author Name</th>
+              <th className="p-4 text-left">Price</th>
+              <th className="p-4 text-left">Quantity</th>
+              <th className="p-4 text-left">Actions</th>
+            </tr>
+          </thead>
+          {filteredOrders.length > 0 ? (
             <tbody>
               {filteredOrders.map((order) => (
                 <tr key={order.id} className="border-t">
@@ -173,47 +174,48 @@ const SalesDashboard: React.FC = () => {
                   </td>
                 </tr>
               ))}
-              {filteredOrders.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="p-4 text-center text-gray-500">
-                    No orders found.
-                  </td>
-                </tr>
-              )}
             </tbody>
-          </table>
-        </div>
+          ) : (
+            <tbody>
+              <tr>
+                <td colSpan={8} className="p-4 text-center text-gray-500">
+                  No orders found.
+                </td>
+              </tr>
+            </tbody>
+          )}
+        </table>
+      </div>
 
-        {/* Card View for Mobile Screens */}
-        <div className="md:hidden space-y-4">
-          {filteredOrders.map((order) => (
-            <div key={order.id} className="bg-white shadow-md rounded-lg p-4">
-              <div className="flex justify-between items-center border-b pb-2 mb-2">
-                <h3 className="text-lg font-semibold">Order ID: {order.id}</h3>
-                <span className="text-gray-500 text-sm">{order.date}</span>
-              </div>
-              <div>
-                {order.books.map((book, index) => (
-                  <div key={index} className="flex items-center gap-4 mb-2">
-                    <img
-                      src={book.image}
-                      alt={book.bookName}
-                      className="w-16 h-20 object-cover rounded-md shadow-md"
-                    />
-                    <div>
-                      <p className="text-lg font-semibold">{book.bookName}</p>
-                      <p className="text-sm text-gray-500">{book.authorName}</p>
-                      <p className="text-sm font-medium">${book.price}</p>
-                      <p className="text-sm text-gray-600">
-                        Quantity: {book.quantity}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+      {/* Card View for Mobile Screens */}
+      <div className="md:hidden space-y-4">
+        {filteredOrders.map((order) => (
+          <div key={order.id} className="bg-white shadow-md rounded-lg p-4">
+            <div className="flex justify-between items-center border-b pb-2 mb-2">
+              <h3 className="text-lg font-semibold">Order ID: {order.id}</h3>
+              <span className="text-gray-500 text-sm">{order.date}</span>
             </div>
-          ))}
-        </div>
+            <div>
+              {order.books.map((book, index) => (
+                <div key={index} className="flex items-center gap-4 mb-2">
+                  <img
+                    src={book.image}
+                    alt={book.bookName}
+                    className="w-16 h-20 object-cover rounded-md shadow-md"
+                  />
+                  <div>
+                    <p className="text-lg font-semibold">{book.bookName}</p>
+                    <p className="text-sm text-gray-500">{book.authorName}</p>
+                    <p className="text-sm font-medium">${book.price}</p>
+                    <p className="text-sm text-gray-600">
+                      Quantity: {book.quantity}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
 
       {confirmDelete.isOpen && (

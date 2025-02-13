@@ -107,87 +107,86 @@ const BooksList = () => {
       </div>
 
       {/* Table View for Desktop */}
-      <div className="hidden md:block ">
-        <div className="relative overflow-x-auto">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" className="px-6 py-3">
-                  Book Name
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Author
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Category
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Price
-                </th>
-                <th className="px-6 py-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredBooks.length > 0 ? (
-                filteredBooks.map((book, index) => (
-                  <tr
-                    key={index}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+
+      <div className="relative overflow-x-auto max-h-[650px]">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0 z-10">
+            <tr>
+              <th scope="col" className="px-6 py-3">
+                Book Name
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Author
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Category
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Price
+              </th>
+              <th className="px-6 py-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="overflow-y-auto">
+            {filteredBooks.length > 0 ? (
+              filteredBooks.map((book, index) => (
+                <tr
+                  key={index}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-3"
                   >
-                    <th
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-3"
-                    >
-                      {book.image ? (
-                        <img
-                          src={
-                            book.image instanceof File
-                              ? URL.createObjectURL(book.image)
-                              : book.image
-                          }
-                          alt={book.bookName}
-                          className="w-12 h-12 object-cover rounded-md"
-                        />
-                      ) : (
-                        <BookOpenIcon className="w-12 h-12 text-gray-500" />
-                      )}
-                      {book.bookName}
-                    </th>
-                    <td className="px-6 py-4">{book.authorName}</td>
-                    <td className="px-6 py-4">{book.bookType}</td>
-                    <td className="px-6 py-4">${book.price}</td>
-                    <td className="px-6 py-4 flex gap-2">
-                      <button
-                        onClick={() => handleOpenModal(book)}
-                        className="px-3 py-1 bg-green-600 text-white text-xs rounded-md hover:bg-green-700"
-                      >
-                        <PencilIcon className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() =>
-                          setConfirmDelete({
-                            isOpen: true,
-                            bookId: book.id,
-                            bookName: book.bookName,
-                          })
+                    {book.image ? (
+                      <img
+                        src={
+                          book.image instanceof File
+                            ? URL.createObjectURL(book.image)
+                            : book.image
                         }
-                        className="px-3 py-1 bg-red-600 text-white text-xs rounded-md hover:bg-red-700"
-                      >
-                        <TrashIcon className="w-5 h-5" />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="px-6 py-4 text-center">
-                    No books found
+                        alt={book.bookName}
+                        className="w-12 h-12 object-cover rounded-md"
+                      />
+                    ) : (
+                      <BookOpenIcon className="w-12 h-12 text-gray-500" />
+                    )}
+                    {book.bookName}
+                  </th>
+                  <td className="px-6 py-4">{book.authorName}</td>
+                  <td className="px-6 py-4">{book.bookType}</td>
+                  <td className="px-6 py-4">${book.price}</td>
+                  <td className="px-6 py-4 flex gap-2">
+                    <button
+                      onClick={() => handleOpenModal(book)}
+                      className="px-3 py-1 bg-blue-500 text-white text-xs rounded-md hover:bg-blue-700"
+                    >
+                      <PencilIcon className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() =>
+                        setConfirmDelete({
+                          isOpen: true,
+                          bookId: book.id,
+                          bookName: book.bookName,
+                        })
+                      }
+                      className="px-3 py-1 bg-red-600 text-white text-xs rounded-md hover:bg-red-700"
+                    >
+                      <TrashIcon className="w-5 h-5" />
+                    </button>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="px-6 py-4 text-center">
+                  No books found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {/* Mobile View */}

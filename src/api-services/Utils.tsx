@@ -38,6 +38,7 @@ export interface Order {
   date: string;
 }
 export interface BookItem {
+  id: string;
   bookName: string;
   authorName: string;
   price: number;

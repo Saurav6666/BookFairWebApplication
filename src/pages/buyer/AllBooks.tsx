@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
-import { HeartIcon } from "@heroicons/react/24/outline";
 import { getBooks } from "../../api-services/bookService";
 import { useCart } from "../../context/CartContext";
-import { Filter, Search } from "lucide-react";
+import { Filter, Search, ShoppingCartIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { generateStarRatings } from "./Utils";
+import Soldout from "../../../public/images/soldout.png";
 interface Book {
   bookName: string;
   authorName: string;
@@ -103,12 +103,12 @@ const AllBooks = () => {
         {/* Filter Section */}
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           {/* Search Input */}
-          <div className="flex items-center border px-4 py-2 rounded-md w-full md:w-72">
-            <Search className="w-4 h-4 mr-2 text-gray-500" />
+          <div className="relative">
+            <Search className="absolute left-3 top-2.5 text-gray-500" />
             <input
               type="text"
               placeholder="Search by book name or author..."
-              className="w-full text-gray-700 bg-transparent outline-none"
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -118,11 +118,14 @@ const AllBooks = () => {
           <div className="flex items-center border px-4 py-2 rounded-md w-full md:w-auto">
             <Filter className="w-4 h-4 mr-2" />
             <select
-              className="w-full text-gray-700 bg-transparent outline-none"
+              className="w-full text-gray-700 bg-transparent outline-none "
               value={bookType}
               onChange={(e) => setBookType(e.target.value)}
             >
               <option value="">All Types</option>
+              <option value="Fiction">Fiction</option>
+              <option value="non-fiction">Non-fiction</option>
+              <option value="mystery">Mystery</option>
               <option value="sci-fi">Sci-Fi</option>
               <option value="fantasy">Fantasy</option>
               <option value="romance">Romance</option>
@@ -163,6 +166,15 @@ const AllBooks = () => {
                     alt={book.bookName}
                     className="w-full h-72 md:h-96 object-cover rounded-md"
                   />
+                  {Number(book.quantity) === 0 && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                      <img
+                        src={Soldout}
+                        alt="Sold Out"
+                        className="w-80 h-32 object-contain"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Favorite Icon */}
@@ -192,18 +204,25 @@ const AllBooks = () => {
                     <span className="text-blue-600 font-semibold mb-2 sm:mb-0">
                       ${book.price}
                     </span>
-                    <button
-                      className={`px-3 py-2 text-sm rounded w-full sm:w-auto transition-all ${
-                        addedToCart[book.bookName]
-                          ? "border border-blue-600 text-blue-600 bg-white"
-                          : "bg-blue-600 text-white hover:bg-blue-700"
-                      }`}
-                      onClick={() => handleAddToCart(book)}
-                    >
-                      {addedToCart[book.bookName]
-                        ? "Remove from Cart"
-                        : "Add to Cart"}
-                    </button>
+                    {Number(book.quantity) > 0 ? (
+                      <button
+                        className={`px-3 py-2 text-sm rounded w-full sm:w-auto transition-all flex ${
+                          addedToCart[book.bookName]
+                            ? "border border-blue-600 text-blue-600 bg-white"
+                            : "bg-blue-600 text-white hover:bg-blue-700"
+                        }`}
+                        onClick={() => handleAddToCart(book)}
+                      >
+                        <ShoppingCartIcon className="w-6 h-6 text-white" />
+                        {addedToCart[book.bookName]
+                          ? "Remove from Cart"
+                          : "Add to Cart"}
+                      </button>
+                    ) : (
+                      <button className="px-3 py-2 text-sm rounded w-full sm:w-auto bg-red-500 text-white cursor-not-allowed">
+                        Sold Out
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

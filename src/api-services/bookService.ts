@@ -66,23 +66,23 @@ const updateBook = async (bookId: string, updatedBook: BookPayload): Promise<Boo
 };
 
 
-
- const order = async (cart: Cart): Promise<Order>=> {
+const order = async (cart: Cart): Promise<Order> => {
   try {
     if (!Array.isArray(cart.items)) {
       console.error("Invalid cart data:", cart);
       throw new Error("Cart data is not an array");
     }
 
-    // Create a map to store unique books with updated quantity
+    // Step 1: Aggregate Books
     const orderData: Record<string, BookItem> = cart.items.reduce((acc, book) => {
-      const { bookName, authorName, price, bookType, image, quantity } = book;
+      const { bookName, authorName, price, bookType, image, quantity, id } = book;
 
       // Ensure quantity is a number
       const bookQuantity = Number(quantity) || 1;
 
-      if (!acc[bookName]) {
-        acc[bookName] = {
+      if (!acc[id]) {
+        acc[id] = {
+          id, // Add bookId to identify the book
           bookName,
           authorName,
           price,
@@ -91,19 +91,33 @@ const updateBook = async (bookId: string, updatedBook: BookPayload): Promise<Boo
           quantity: bookQuantity,
         };
       } else {
-        acc[bookName].quantity += bookQuantity;
+        acc[id].quantity += bookQuantity;
       }
 
       return acc;
     }, {} as Record<string, BookItem>);
 
-    // Convert orderData object to array
+    // Convert object to array
     const orderArray = Object.values(orderData);
 
-    // Send order request
-    const response = await axiosInstance.post("/orders", {
-      books: orderArray, // Sending array of books with updated quantities
-    });
+    // Step 2: Place Order
+    const response = await axiosInstance.post("/orders", { books: orderArray });
+
+    // Step 3: Update Book Quantities in Database
+    await Promise.all(orderArray.map(async (book) => {
+      try {
+        // Fetch the current book details
+        const existingBook = await axiosInstance.get(`/books/${book.id}`);
+
+        // Calculate new quantity
+        const updatedQuantity = Math.max(0, existingBook.data.quantity - book.quantity);
+
+        // Update book quantity in database
+        await axiosInstance.patch(`/books/${book.id}`, { quantity: updatedQuantity });
+      } catch (error) {
+        console.error(`Error updating quantity for book ${book.id}:`, error);
+      }
+    }));
 
     return response.data;
   } catch (error) {
