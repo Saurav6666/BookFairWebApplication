@@ -8,36 +8,12 @@ const HomeFooter = () => {
         <div className="flex items-center space-x-6">
           {/* Logo */}
           <div className="text-xl font-bold flex items-center">
-            <span>Spendflo</span>
+            <span>2025 Book Fair</span>
           </div>
-
-          {/* Navigation Links */}
-          <nav className="hidden md:flex space-x-6 text-sm">
-            <a href="#" className="hover:underline">
-              Pricing
-            </a>
-            <a href="#" className="hover:underline">
-              Resources
-            </a>
-            <a href="#" className="hover:underline">
-              About
-            </a>
-            <a href="#" className="hover:underline">
-              Careers
-            </a>
-            <a href="#" className="hover:underline">
-              Contact
-            </a>
-          </nav>
         </div>
 
         {/* Right Section */}
         <div className="flex items-center space-x-4 mt-4 md:mt-0">
-          {/* LinkedIn Icon */}
-          <a href="#" className="p-2 bg-gray-800 rounded-md hover:bg-gray-700">
-            <img src="/linkedin.svg" alt="LinkedIn" className="h-4 w-4" />
-          </a>
-
           {/* Email */}
           <a
             href="mailto:hello@spendflo.com"

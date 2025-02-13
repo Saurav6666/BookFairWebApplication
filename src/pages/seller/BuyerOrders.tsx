@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Search, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Search, Trash2 } from "lucide-react";
 import Layout from "../../components/Layout";
 import { getOrders, deleteOrder } from "../../api-services/bookService";
 import { Book, Order } from "./Utils";
 import DeleteModal from "../../components/DeleteModal";
+import OrdersMobileView from "../../components/MobileView";
 
 const SalesDashboard: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
+  const [sortConfig, setSortConfig] = useState<{
+    key: string;
+    direction: "asc" | "desc" | null;
+  }>({ key: "", direction: null });
   const [confirmDelete, setConfirmDelete] = useState<{
     isOpen: boolean;
     bookId: string | null;
@@ -64,19 +69,46 @@ const SalesDashboard: React.FC = () => {
     }
   };
 
-  // Filtered orders based on search input
-  const filteredOrders = orders.filter((order) =>
-    order.books.some(
-      (book) =>
-        book.bookName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        book.authorName.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  const sortedOrders = [...orders].sort((a, b) => {
+    if (!sortConfig.direction) return 0;
+
+    let valueA, valueB;
+
+    if (sortConfig.key === "bookName") {
+      valueA = a.books[0]?.bookName || "";
+      valueB = b.books[0]?.bookName || "";
+    } else if (sortConfig.key === "price") {
+      valueA = a.books.reduce((total, book) => total + book.price, 0); // Sum of all book prices
+      valueB = b.books.reduce((total, book) => total + book.price, 0);
+    } else {
+      valueA = a[sortConfig.key];
+      valueB = b[sortConfig.key];
+    }
+
+    if (typeof valueA === "string" && typeof valueB === "string") {
+      return sortConfig.direction === "asc"
+        ? valueA.localeCompare(valueB)
+        : valueB.localeCompare(valueA);
+    }
+
+    if (typeof valueA === "number" && typeof valueB === "number") {
+      return sortConfig.direction === "asc" ? valueA - valueB : valueB - valueA;
+    }
+
+    return 0;
+  });
 
   return (
     <Layout>
       {/* Header Section with Search Input */}
-      <div className="flex justify-between items-center mb-6  text-blue-600 ">
+      <div className="flex justify-between items-center mb-6  text-primary ">
         <h2 className="text-2xl font-semibold">Orders</h2>
         <div className="flex gap-2 items-center">
           <div className="relative">
@@ -86,7 +118,7 @@ const SalesDashboard: React.FC = () => {
               placeholder="Search by Book Name or Author"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
         </div>
@@ -98,19 +130,58 @@ const SalesDashboard: React.FC = () => {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0 z-10">
             <tr>
-              <th className="p-4 text-left">Order ID</th>
-              <th className="p-4 text-left">Date</th>
-              <th className="p-4 text-left">Books Name</th>
-              <th className="p-4 text-left">Book Cover</th>
-              <th className="p-4 text-left">Author Name</th>
-              <th className="p-4 text-left">Price</th>
-              <th className="p-4 text-left">Quantity</th>
-              <th className="p-4 text-left">Actions</th>
+              {[
+                "orderId",
+                "date",
+                "bookName",
+                "bookCover",
+                "authorName",
+                "price",
+                "quantity",
+              ].map((key) => (
+                <th
+                  key={key}
+                  scope="col"
+                  className="px-6 py-3 cursor-pointer"
+                  onClick={() => handleSort(key as keyof Book)}
+                >
+                  <div className="flex items-center group relative">
+                    {key.replace(/([A-Z])/g, " $1")} {/* Format column names */}
+                    <div className="ml-1 flex flex-col">
+                      <ChevronUp
+                        className={`w-4 h-4 transition-opacity ${
+                          sortConfig.key === key &&
+                          sortConfig.direction === "asc"
+                            ? "opacity-100 text-primary"
+                            : "opacity-50 text-gray-400"
+                        }`}
+                      />
+                      <ChevronDown
+                        className={`w-4 h-4 transition-opacity ${
+                          sortConfig.key === key &&
+                          sortConfig.direction === "desc"
+                            ? "opacity-100 text-primary"
+                            : "opacity-50 text-gray-400"
+                        }`}
+                      />
+                    </div>
+                    {/* Tooltip */}
+                    <span className="absolute -top-30 right-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs px-2 py-1 rounded-md transition-all whitespace-nowrap">
+                      {sortConfig.key === key
+                        ? sortConfig.direction === "asc"
+                          ? "Ascending"
+                          : "Descending"
+                        : "Sort"}
+                    </span>
+                  </div>
+                </th>
+              ))}
+              <th className="px-6 py-3">Actions</th>
             </tr>
           </thead>
-          {filteredOrders.length > 0 ? (
+          {sortedOrders.length > 0 ? (
             <tbody>
-              {filteredOrders.map((order) => (
+              {sortedOrders.map((order) => (
                 <tr key={order.id} className="border-t">
                   <td className="p-4">{order.id}</td>
                   <td className="p-4">{order.date}</td>
@@ -159,18 +230,23 @@ const SalesDashboard: React.FC = () => {
                     )}
                   </td>
                   <td className="p-4">
-                    <button
-                      onClick={() =>
-                        setConfirmDelete({
-                          isOpen: true,
-                          bookId: order.id,
-                          bookName: order.books[0]?.bookName || "Unknown",
-                        })
-                      }
-                      className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
+                    <td className="p-4">
+                      <button
+                        onClick={() =>
+                          setConfirmDelete({
+                            isOpen: true,
+                            bookId: order.id,
+                            bookName: order.books[0]?.bookName || "Unknown",
+                          })
+                        }
+                        className="bg-danger text-white p-2 rounded-md hover:bg-dangerDark relative group"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                        <span className="absolute left-1/2 transform -translate-x-1/2 top-[-30px] bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                          Delete
+                        </span>
+                      </button>
+                    </td>
                   </td>
                 </tr>
               ))}
@@ -188,35 +264,8 @@ const SalesDashboard: React.FC = () => {
       </div>
 
       {/* Card View for Mobile Screens */}
-      <div className="md:hidden space-y-4">
-        {filteredOrders.map((order) => (
-          <div key={order.id} className="bg-white shadow-md rounded-lg p-4">
-            <div className="flex justify-between items-center border-b pb-2 mb-2">
-              <h3 className="text-lg font-semibold">Order ID: {order.id}</h3>
-              <span className="text-gray-500 text-sm">{order.date}</span>
-            </div>
-            <div>
-              {order.books.map((book, index) => (
-                <div key={index} className="flex items-center gap-4 mb-2">
-                  <img
-                    src={book.image}
-                    alt={book.bookName}
-                    className="w-16 h-20 object-cover rounded-md shadow-md"
-                  />
-                  <div>
-                    <p className="text-lg font-semibold">{book.bookName}</p>
-                    <p className="text-sm text-gray-500">{book.authorName}</p>
-                    <p className="text-sm font-medium">${book.price}</p>
-                    <p className="text-sm text-gray-600">
-                      Quantity: {book.quantity}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+
+      <OrdersMobileView orders={orders} setConfirmDelete={setConfirmDelete} />
 
       {confirmDelete.isOpen && (
         <DeleteModal

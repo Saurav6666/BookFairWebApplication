@@ -42,6 +42,14 @@ const Sidebar = () => {
                 🛒 My Cart
               </Link>
             </li>
+            <li>
+              <Link
+                to="/my-orders"
+                className="block p-2 hover:bg-slate-600 rounded"
+              >
+                📦 My Orders
+              </Link>
+            </li>
           </ul>
         )}
       </nav>

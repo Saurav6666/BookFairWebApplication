@@ -97,8 +97,10 @@ const AllBooks = () => {
 
   return (
     <Layout>
-      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold mb-4 md:mb-0">All Books</h1>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 p-4">
+        <h1 className="text-2xl text-primary font-semibold mb-4 md:mb-0">
+          All Books
+        </h1>
 
         {/* Filter Section */}
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
@@ -108,7 +110,7 @@ const AllBooks = () => {
             <input
               type="text"
               placeholder="Search by book name or author..."
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -152,7 +154,7 @@ const AllBooks = () => {
       {loading ? (
         <p className="text-center text-gray-500">Loading books...</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-4">
           {filteredBooks.length > 0 ? (
             filteredBooks.map((book, index) => (
               <div
@@ -201,7 +203,7 @@ const AllBooks = () => {
                   </div>
                   {/* Price & Add to Cart Button */}
                   <div className="mt-3 flex flex-col sm:flex-row sm:items-center justify-between">
-                    <span className="text-blue-600 font-semibold mb-2 sm:mb-0">
+                    <span className="text-primary font-semibold mb-2 sm:mb-0">
                       ${book.price}
                     </span>
                     {Number(book.quantity) > 0 ? (
@@ -209,7 +211,7 @@ const AllBooks = () => {
                         className={`px-3 py-2 text-sm rounded w-full sm:w-auto transition-all flex ${
                           addedToCart[book.bookName]
                             ? "border border-blue-600 text-blue-600 bg-white"
-                            : "bg-blue-600 text-white hover:bg-blue-700"
+                            : "bg-primary text-white hover:bg-primaryDark"
                         }`}
                         onClick={() => handleAddToCart(book)}
                       >
@@ -219,7 +221,7 @@ const AllBooks = () => {
                           : "Add to Cart"}
                       </button>
                     ) : (
-                      <button className="px-3 py-2 text-sm rounded w-full sm:w-auto bg-red-500 text-white cursor-not-allowed">
+                      <button className="px-3 py-2 text-sm rounded w-full sm:w-auto bg-danger text-white cursor-not-allowed">
                         Sold Out
                       </button>
                     )}

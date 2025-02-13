@@ -1,6 +1,8 @@
 import React from "react";
 import { TrashIcon, PencilIcon } from "@heroicons/react/16/solid";
 import { Book } from "./Utils";
+import Soldout from "../../../public/images/soldout.png";
+
 interface BookCardProps {
   book: Book;
   handleOpenModal: (book: Book) => void; // ✅ Accepts a Book argument
@@ -37,12 +39,24 @@ const BookCard = ({
         <h3 className="text-lg font-semibold">{book.bookName}</h3>
         <p className="text-sm text-gray-600">{book.authorName}</p>
         <p className="text-sm text-gray-600">Category: {book.bookType}</p>
+        <p className="text-sm text-gray-600 flex">
+          Quantity: {book.quantity}{" "}
+          {Number(book.quantity) === 0 && (
+            <span>
+              <img
+                src={Soldout}
+                alt="Sold Out"
+                className="w-24 h-10 object-contain"
+              />
+            </span>
+          )}
+        </p>
         <p className="text-sm font-semibold">Price: ${book.price}</p>
       </div>
       <div className="flex gap-2">
         <button
           onClick={() => handleOpenModal(book)}
-          className="p-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+          className="px-3 py-1 bg-primary  text-white text-xs rounded-md hover:bg-primaryDark"
         >
           <PencilIcon className="w-5 h-5" />
         </button>
@@ -54,7 +68,7 @@ const BookCard = ({
               bookName: book.bookName,
             })
           }
-          className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          className="px-3 py-1 bg-danger text-white text-xs rounded-md hover:bg-dangerDark"
         >
           <TrashIcon className="w-5 h-5" />
         </button>

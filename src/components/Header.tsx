@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({ hadleRegistration, hadleLogin }) => {
   }, []);
 
   return (
-    <header className="flex justify-between items-center bg-gradient-to-r from-blue-800 to-blue-600 shadow-lg px-6 py-4 md:px-10 md:py-5 sticky top-0 z-50">
+    <header className="flex justify-between items-center bg-gradient-to-r from-primaryDark to-primary shadow-lg px-6 py-4 md:px-10 md:py-5 sticky top-0 z-50">
       {/* Logo or Shop Name */}
       <div className="flex items-center space-x-3">
         {user?.role === "seller" ? (
@@ -66,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({ hadleRegistration, hadleLogin }) => {
             >
               <ShoppingCartIcon className="w-6 h-6 text-white" />
               {cart.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                <span className="absolute -top-2 -right-2 bg-danger text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                   {cart.length}
                 </span>
               )}
@@ -91,7 +91,7 @@ const Header: React.FC<HeaderProps> = ({ hadleRegistration, hadleLogin }) => {
                   My Profile
                 </button>
                 <button
-                  className="flex items-center w-full px-4 py-2 hover:bg-gray-100 text-red-500"
+                  className="flex items-center w-full px-4 py-2 hover:bg-gray-100 text-danger"
                   onClick={() => {
                     localStorage.removeItem("user");
                     navigate("/");
