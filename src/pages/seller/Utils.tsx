@@ -18,6 +18,7 @@ export interface Book {
   quantity: number;
   bookType: string;
   image: string | File;
+  shopname: string;
 }
 
 export interface Order {

@@ -21,6 +21,11 @@ const getBooks = async (): Promise<Book[]> => {
 
 const addBook = async (book: BookPayload): Promise<Book> => {
   try {
+    const sellerData = localStorage.getItem("user");
+    const parsedData = sellerData ? JSON.parse(sellerData) : null;
+
+    // Extract shopname if user is a seller
+    const shopName = parsedData?.role === "seller" ? parsedData.shopname : null;
     const response = await axiosInstance.post("/books", {
       bookName: book.bookName,
       authorName: book.authorName,
@@ -28,7 +33,8 @@ const addBook = async (book: BookPayload): Promise<Book> => {
       quantity:book.quantity.toString(),
       bookType: book.bookType,
       image: book.imageBase64, // Send as Base64
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      shopName,
     });
 
     return response.data;
